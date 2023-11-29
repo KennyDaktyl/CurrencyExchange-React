@@ -11,7 +11,8 @@ const CurrencyConverter = () => {
   const [targetCurrency, setTargetCurrency] = useState('USD');
   const [conversionRates, setConversionRates] = useState([]);
   const [fetchError, setFetchError] = useState(null);
-
+  const [lastUpdated, setLastUpdated] = useState(null)
+  
   const API_URL = 'http://127.0.0.1:8000/api/currencies/'
 
   useEffect(() => {
@@ -25,8 +26,8 @@ const CurrencyConverter = () => {
     try {
       const response = await axios.get(API_URL);
       setConversionRates(response.data);
-      // Jeśli wcześniej wystąpił błąd, zresetuj stan błędu
       setFetchError(null);
+      setLastUpdated(new Date())
     } catch (error) {
       console.error('Błąd podczas pobierania kursów walut:', error);
       setFetchError('Sprawdź połączenie internetowe.');
@@ -62,10 +63,16 @@ const CurrencyConverter = () => {
           {fetchError}
         </div>
       )}
+      {lastUpdated && (
+        <div className='row'>
+          <p className='col text-start'>Ostania aktualizacja:</p>
+          <p className='col text-primary text-end'>{lastUpdated.toLocaleString()}</p>
+        </div>
+      )}
       <ul>
           {conversionRates.map(currency => (
             <li key={currency.code}>
-              {currency.code}: <b>{currency.rate}</b> <small>{currency.last_updated.toLocaleString()}</small>
+              {currency.code}: <b>{currency.rate}</b>
             </li>
           ))}
       </ul>
@@ -75,7 +82,7 @@ const CurrencyConverter = () => {
           <input
             className='form-control'
             value={amount}
-            min={1}
+            min={0.01}
             max={10000000}
             type="number"
             step={0.01}
@@ -84,40 +91,41 @@ const CurrencyConverter = () => {
           />
         </label>
       </div>
+      <div className='row mt-3 d-flex align-items-center'>
+        <div className='col'>
+          <p>Wybierz walutę źródłową:</p>
+          <select
+            className='custom-select'
+            value={sourceCurrency}
+            onChange={(e) => {
+              setConvertedAmount(null);
+              setSourceCurrency(e.target.value);
+            }}
+          >
+            <option value="PLN" key="PLN" disabled={"PLN" === targetCurrency}>PLN</option>
+            {conversionRates.map(currency => (
+              <option key={currency.code} value={currency.code} disabled={currency.code === targetCurrency}>{currency.code}</option>
+            ))}
+          </select>
+        </div>
 
-      <div className='mt-3'>
-        <p>Wybierz walutę źródłową:</p>
-        <select
-          className='custom-select'
-          value={sourceCurrency}
-          onChange={(e) => {
-            setConvertedAmount(null);
-            setSourceCurrency(e.target.value);
-          }}
-        >
-          <option value="PLN" key="PLN" disabled={"PLN" === targetCurrency}>PLN</option>
-          {conversionRates.map(currency => (
-            <option key={currency.code} value={currency.code} disabled={currency.code === targetCurrency}>{currency.code}</option>
-          ))}
-        </select>
+        <div className='col'>
+          <p>Wybierz walutę docelową:</p>
+          <select
+            className='custom-select'
+            value={targetCurrency}
+            onChange={(e) => {
+              setConvertedAmount(null);
+              setTargetCurrency(e.target.value);
+            }}
+          >
+            <option value="PLN" key="PLN" disabled={"PLN" === sourceCurrency}>PLN</option>
+            {conversionRates.map(currency => (
+              <option key={currency.code} value={currency.code} disabled={currency.code === sourceCurrency}>{currency.code}</option>
+            ))}
+          </select>
+        </div>
       </div>
-
-      <div className='mt-3'>
-        <p>Wybierz walutę docelową:</p>
-        <select
-          className='custom-select'
-          value={targetCurrency}
-          onChange={(e) => {
-            setConvertedAmount(null);
-            setTargetCurrency(e.target.value)}}
-        > 
-          <option value="PLN" key="PLN" disabled={"PLN" === sourceCurrency}>PLN</option>
-          {conversionRates.map(currency => (
-            <option key={currency.code} value={currency.code} disabled={currency.code === sourceCurrency}>{currency.code}</option>
-          ))}
-        </select>
-      </div>
-
       <div className='col-12 d-flex justify-content-center mt-3'>
         <button className='col-10 btn btn-success' type="submit">Przelicz</button>
       </div>
