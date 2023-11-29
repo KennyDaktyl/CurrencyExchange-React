@@ -10,22 +10,27 @@ const CurrencyConverter = () => {
   const [sourceCurrency, setSourceCurrency] = useState('PLN');
   const [targetCurrency, setTargetCurrency] = useState('USD');
   const [conversionRates, setConversionRates] = useState([]);
+  const [fetchError, setFetchError] = useState(null);
 
   const API_URL = 'http://127.0.0.1:8000/api/currencies/'
 
   useEffect(() => {
-    fetchConversionRates(); 
-    const intervalId = setInterval(fetchConversionRates, 60000); 
+    fetchConversionRates();
+    const intervalId = setInterval(fetchConversionRates, 60000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, []);
 
-  const fetchConversionRates = () => {
-    axios.get(API_URL)
-      .then(response => {
-        setConversionRates(response.data);
-      })
-      .catch(error => console.error('Błąd podczas pobierania kursów walut:', error));
+  const fetchConversionRates = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      setConversionRates(response.data);
+      // Jeśli wcześniej wystąpił błąd, zresetuj stan błędu
+      setFetchError(null);
+    } catch (error) {
+      console.error('Błąd podczas pobierania kursów walut:', error);
+      setFetchError('Sprawdź połączenie internetowe.');
+    }
   };
 
   const handleConversion = (e) => {
@@ -52,6 +57,11 @@ const CurrencyConverter = () => {
 
   return (
     <form className='col-12' onSubmit={handleConversion}>
+      {fetchError && (
+        <div className="alert alert-danger" role="alert">
+          {fetchError}
+        </div>
+      )}
       <ul>
           {conversionRates.map(currency => (
             <li key={currency.code}>
