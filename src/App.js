@@ -70,12 +70,14 @@ const CurrencyConverter = () => {
         </div>
       )}
       <ul>
-          {conversionRates.map(currency => (
-            <li key={currency.code}>
-              {currency.code}: <b>{currency.rate}</b>
-            </li>
-          ))}
-      </ul>
+      {conversionRates.map(currency => (
+        (currency.code === "EUR" || currency.code === "USD" || currency.code === "GBP") && (
+          <li key={currency.code}>
+            {currency.code}: <b>{currency.rate}</b>
+          </li>
+        )
+      ))}
+    </ul>
       <div>
         <label>
           Wprowadź kwotę:
@@ -104,7 +106,7 @@ const CurrencyConverter = () => {
           >
             <option value="PLN" key="PLN" disabled={"PLN" === targetCurrency}>PLN</option>
             {conversionRates.map(currency => (
-              <option key={currency.code} value={currency.code} disabled={currency.code === targetCurrency}>{currency.code}</option>
+              <option key={currency.code} value={currency.code}>{currency.code}</option>
             ))}
           </select>
         </div>
@@ -121,7 +123,7 @@ const CurrencyConverter = () => {
           >
             <option value="PLN" key="PLN" disabled={"PLN" === sourceCurrency}>PLN</option>
             {conversionRates.map(currency => (
-              <option key={currency.code} value={currency.code} disabled={currency.code === sourceCurrency}>{currency.code}</option>
+              <option key={currency.code} value={currency.code}>{currency.code}</option>
             ))}
           </select>
         </div>
@@ -140,7 +142,7 @@ const CurrencyConverter = () => {
 
 function App() {
   return (
-    <div className="border border-success border-r mt-3 p-3 col-6">
+    <div className="border border-success border-r mt-3 p-3 col-md-6">
       <h2 className='col-12 text-center'>KANTOR</h2>
         <CurrencyConverter />
     </div>
