@@ -106,7 +106,7 @@ const CurrencyConverter = () => {
           >
             <option value="PLN" key="PLN" disabled={"PLN" === targetCurrency}>PLN</option>
             {conversionRates.map(currency => (
-              <option key={currency.code} value={currency.code}>{currency.code}</option>
+              <option key={currency.code} value={currency.code}>{currency.code}&nbsp;{currency.name}</option>
             ))}
           </select>
         </div>
@@ -123,7 +123,7 @@ const CurrencyConverter = () => {
           >
             <option value="PLN" key="PLN" disabled={"PLN" === sourceCurrency}>PLN</option>
             {conversionRates.map(currency => (
-              <option key={currency.code} value={currency.code}>{currency.code}</option>
+              <option key={currency.code} value={currency.code}>{currency.code}&nbsp;{currency.name}</option>
             ))}
           </select>
         </div>
