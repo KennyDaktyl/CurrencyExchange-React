@@ -24,3 +24,6 @@ Lub przez Docker-Compose
 
 Otwórz przeglądarke:
     http://localhost:3000
+
+Kod części backendowej:
+https://github.com/KennyDaktyl/CurrencyExchange-Backend
