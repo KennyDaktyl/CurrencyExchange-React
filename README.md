@@ -3,6 +3,9 @@ Pobiera dane z API i daje możliwość przeliczania waluty.
 W zależności od danych z API lista walut do wyboru.
 Odświeżanie danych podczas naciśniecia buttona Przelicz lub co 60 sekund.
 
+Wersja live:
+https://exchange.resto-app.pl/api
+
 
 Pobranie kodu
 **git clone https://github.com/KennyDaktyl/CurrencyExchange-React.git**
